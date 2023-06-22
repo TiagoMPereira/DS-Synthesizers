@@ -53,7 +53,8 @@ def stats_wasserstein(original: pd.DataFrame, synthetic: pd.DataFrame):
     assert list(synthetic.columns) == columns
 
     stats = {
-        col: wasserstein_distance(original[col], synthetic[col]) for col in columns
+        col: wasserstein_distance(original[col], synthetic[col])
+        for col in columns
     }
     stats_values = np.array(list(stats.values()))
     _stats = _get_stats(stats_values)

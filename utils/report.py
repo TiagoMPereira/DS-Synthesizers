@@ -1,6 +1,6 @@
 import pandas as pd
 from utils.stats import stats_ks, stats_jensenshannon, stats_wasserstein
-from utils.plots import plot_histogram, plot_kde, plot_pca
+from utils.plots import plot_histogram, plot_kde, plot_pca, plot_correlation
 import os
 
 
@@ -11,7 +11,7 @@ def generate_report(
 ):
     base_path = f"./results/{id_}/"
 
-    if not(os.path.exists(base_path)):
+    if not (os.path.exists(base_path)):
         os.makedirs(base_path)
 
     # Calculating metrics
@@ -27,3 +27,4 @@ def generate_report(
     plot_histogram(X, fake, f'{base_path}histogram.jpg')
     plot_kde(X, fake, f'{base_path}kde.jpg')
     plot_pca(X, fake, f'{base_path}pca.jpg')
+    plot_correlation(X, fake, f"{base_path}corr")
