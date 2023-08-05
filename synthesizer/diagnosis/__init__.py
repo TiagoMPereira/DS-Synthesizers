@@ -1,0 +1,1 @@
+from synthesizer.diagnosis.diagnosis import diagnostic
