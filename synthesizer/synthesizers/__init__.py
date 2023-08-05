@@ -1,0 +1,1 @@
+from synthesizer.synthesizers.base import BaseSynthesizer
