@@ -22,7 +22,6 @@ class TVAE(BaseSynthesizer):
     def _create_model(self):
         self.synthesizer = TVAESynthesizer(
             metadata=self.metadata,
-            locales=self.locales,
             enforce_min_max_values=self.enforce_min_max_values,
             enforce_rounding=self.enforce_rounding,
             epochs=self.epochs,

@@ -1,4 +1,5 @@
 from sdv.metadata import SingleTableMetadata
+import pandas as pd
 
 
 class BaseSynthesizer(object):
@@ -11,4 +12,11 @@ class BaseSynthesizer(object):
         self.cuda = False
 
     def _create_models(self):
-        pass
+        self.synthesizer = None
+
+    def fit(self, data: pd.DataFrame) -> None:
+        self.synthesizer.fit(data)
+
+    def sample(self, n_rows: int) -> pd.DataFrame:
+        generated_data = self.synthesizer.sample(num_rows=n_rows)
+        return generated_data
