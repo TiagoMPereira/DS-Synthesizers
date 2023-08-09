@@ -5,10 +5,31 @@ def duplicate_classes(occurences: dict):
     return occurences
 
 
+def invert_classes(occurences: dict):
+    sorted = pd.Series(occurences).sort_values().to_dict()
+    _keys = list(sorted.keys())
+    most_popular_class = _keys[-1]
+    least_popular_class = _keys[0]
+
+    occurences_per_class = occurences[most_popular_class] \
+        + occurences[least_popular_class]
+    
+    return {
+        _k: occurences_per_class - occurences[_k] for _k in occurences.keys()
+    }
+
+
+def fixed_number(occurences: dict, n_to_generate: int):
+    return {
+        _k: n_to_generate for _k in occurences.keys()
+    }
+
+
 def diagnostic(
     data: pd.DataFrame,
     target: str,
-    proportion_strategy: str = "duplicate"
+    proportion_strategy: str = "duplicate",
+    n_samples: int = None
 ):
     if not target in data.columns:
         raise ValueError(f"Target '{target}' is not in the dataset")
@@ -23,6 +44,13 @@ def diagnostic(
     # Calculates the number of rows to generate
     if proportion_strategy == "duplicate":
         rows_to_generate = duplicate_classes(classes_occurences)
+    elif proportion_strategy == "inverse":
+        rows_to_generate = invert_classes(classes_occurences)
+    elif proportion_strategy == "fixed":
+        if not n_samples:
+            raise ValueError(f"To generate a fixed number of samples you must "
+                             "provide 'n_samples' parameter")
+        rows_to_generate = fixed_number(classes_occurences)
     else:
         raise ValueError(f"The strategy '{proportion_strategy}' is not "
                          "implemented")
@@ -37,4 +65,3 @@ def diagnostic(
     }
 
     return diagnosis
-
