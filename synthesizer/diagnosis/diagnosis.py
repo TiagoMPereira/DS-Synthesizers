@@ -39,13 +39,16 @@ def diagnostic(
     elif sampling_strategy == "not minority":
         rows_to_generate = not_minority_strategy(classes_occurences)
 
+    target_type = data[target].dtypes.name
+
     diagnosis = {
         "target": str(target),
         "dataset_length": int(dataset_length),
         "memory_usage": float(dataset_memo),
         "classes_occurences": classes_occurences,
         "classes_proportions": classes_proportion,
-        "rows_to_generate": rows_to_generate
+        "rows_to_generate": rows_to_generate,
+        "target_type": target_type
     }
 
     return diagnosis
