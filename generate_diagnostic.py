@@ -22,7 +22,7 @@ if __name__ == "__main__":
         target = dataset["target"]
         data = pd.read_csv(f"{base_path}{name}.csv")
 
-        diagnosis = diagnostic(data, target, "duplicate")
+        diagnosis = diagnostic(data, target)
 
         with open(f"{base_save_path}{name}.json", "w") as fp:
             json.dump(diagnosis, fp)

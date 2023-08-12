@@ -9,8 +9,7 @@ from synthesizer.utils.sampling_strategies import (all_strategy,
 def diagnostic(
     data: pd.DataFrame,
     target: str,
-    sampling_strategy: str = "auto",
-    n_samples: int = None
+    sampling_strategy: str = "auto"
 ):
     
     available_strategies = [
