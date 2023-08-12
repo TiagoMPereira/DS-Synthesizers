@@ -1,36 +1,25 @@
 import pandas as pd
 
-
-def duplicate_classes(occurences: dict):
-    return occurences
-
-
-def invert_classes(occurences: dict):
-    sorted = pd.Series(occurences).sort_values().to_dict()
-    _keys = list(sorted.keys())
-    most_popular_class = _keys[-1]
-    least_popular_class = _keys[0]
-
-    occurences_per_class = occurences[most_popular_class] \
-        + occurences[least_popular_class]
-    
-    return {
-        _k: occurences_per_class - occurences[_k] for _k in occurences.keys()
-    }
-
-
-def fixed_number(occurences: dict, n_to_generate: int):
-    return {
-        _k: n_to_generate for _k in occurences.keys()
-    }
+from synthesizer.utils.sampling_strategies import (all_strategy,
+                                                   minority_strategy,
+                                                   not_majority_strategy,
+                                                   not_minority_strategy)
 
 
 def diagnostic(
     data: pd.DataFrame,
     target: str,
-    proportion_strategy: str = "duplicate",
+    sampling_strategy: str = "auto",
     n_samples: int = None
 ):
+    
+    available_strategies = [
+        "all", "auto", "minority", "not majority", "not minority"]
+    if sampling_strategy not in available_strategies:
+        raise ValueError(f"The strategy {sampling_strategy} is not available."
+                         "The available strategies are "
+                         f"{', '.join(available_strategies)}")
+
     if not target in data.columns:
         raise ValueError(f"Target '{target}' is not in the dataset")
     
@@ -42,18 +31,14 @@ def diagnostic(
     dataset_memo = data.memory_usage().sum() / 1000 / 1000
 
     # Calculates the number of rows to generate
-    if proportion_strategy == "duplicate":
-        rows_to_generate = duplicate_classes(classes_occurences)
-    elif proportion_strategy == "inverse":
-        rows_to_generate = invert_classes(classes_occurences)
-    elif proportion_strategy == "fixed":
-        if not n_samples:
-            raise ValueError(f"To generate a fixed number of samples you must "
-                             "provide 'n_samples' parameter")
-        rows_to_generate = fixed_number(classes_occurences)
-    else:
-        raise ValueError(f"The strategy '{proportion_strategy}' is not "
-                         "implemented")
+    if sampling_strategy == "all":
+        rows_to_generate = all_strategy(classes_occurences)
+    elif sampling_strategy in ["auto", "not majority"]:
+        rows_to_generate = not_majority_strategy(classes_occurences)
+    elif sampling_strategy == "minority":
+        rows_to_generate = minority_strategy(classes_occurences)
+    elif sampling_strategy == "not minority":
+        rows_to_generate = not_minority_strategy(classes_occurences)
 
     diagnosis = {
         "target": str(target),
